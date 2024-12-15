@@ -9,24 +9,25 @@
         body {
             margin: 0;
             font-family: 'Inter', sans-serif;
-            background: #0f0f0f;
-            color: #fff;
+            background: #121212;
+            color: #ffffff;
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow-x: hidden;
         }
 
-        /* Navigation Bar */
+        /* Navbar */
         .navbar {
             display: flex;
             justify-content: center;
-            background: #1c1c1c;
+            background: #1f1f1f;
             width: 100%;
-            padding: 15px;
+            padding: 15px 0;
             position: fixed;
             top: 0;
             z-index: 100;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .navbar button {
@@ -37,15 +38,15 @@
             padding: 10px 20px;
             cursor: pointer;
             border-radius: 5px;
-            font-weight: 600;
-            transition: 0.3s;
+            font-weight: bold;
+            transition: background 0.3s ease;
         }
 
-        .navbar button:hover, .navbar button.active {
+        .navbar button.active, .navbar button:hover {
             background: #4caf50;
         }
 
-        /* Main Content */
+        /* Content Area */
         .content {
             margin-top: 100px;
             width: 100%;
@@ -61,12 +62,6 @@
         }
 
         /* Effects Section */
-        .effects {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
         .effects canvas {
             background: #222;
             border: 2px solid #444;
@@ -74,12 +69,12 @@
             height: 300px;
         }
 
-        /* Game Section */
+        /* Snake Game Section */
         .game canvas {
             background: #000;
-            width: 300px;
-            height: 300px;
             border: 2px solid #444;
+            width: 320px;
+            height: 320px;
         }
 
         /* Graph Section */
@@ -88,27 +83,20 @@
             height: 300px;
         }
 
-        /* Video Editor */
-        .video-editor {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .video-editor .cube {
-            width: 150px;
-            height: 150px;
+        /* Video Editor Section */
+        .video-editor .video-box {
+            width: 300px;
+            height: 200px;
             background: linear-gradient(45deg, #FF5733, #C70039);
-            animation: spin 4s infinite linear;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
 
-        @keyframes spin {
-            from {
-                transform: rotateY(0deg);
-            }
-            to {
-                transform: rotateY(360deg);
-            }
+        .video-editor .controls button {
+            margin: 5px;
         }
     </style>
 </head>
@@ -124,28 +112,28 @@
         <!-- FX Section -->
         <div id="effects" class="effects hidden">
             <canvas id="effectCanvas"></canvas>
-            <button onclick="generateEffect()">Play Effect</button>
+            <button onclick="playEffects()">Play Effects</button>
         </div>
 
         <!-- Game Section -->
         <div id="game" class="game hidden">
-            <canvas id="snakeGame"></canvas>
+            <canvas id="snakeCanvas"></canvas>
         </div>
 
         <!-- Graph Section -->
         <div id="graph" class="graph hidden">
             <canvas id="graphCanvas"></canvas>
-            <button onclick="generateGraph()">Show</button>
+            <button onclick="generateGraphs()">Generate Graph</button>
         </div>
 
         <!-- Video Editor Section -->
         <div id="video-editor" class="video-editor hidden">
-            <div class="cube"></div>
+            <div class="video-box" id="videoBox">Video Preview</div>
             <div class="controls">
-                <button>Play</button>
-                <button>Pause</button>
-                <button>Speed +</button>
-                <button>Speed -</button>
+                <button onclick="playVideo()">Play</button>
+                <button onclick="pauseVideo()">Pause</button>
+                <button onclick="speedUp()">Speed +</button>
+                <button onclick="speedDown()">Speed -</button>
             </div>
         </div>
     </div>
@@ -164,31 +152,67 @@
             });
         });
 
-        function generateEffect() {
+        function playEffects() {
             const canvas = document.getElementById('effectCanvas');
             const ctx = canvas.getContext('2d');
-            const effects = ['Fire', 'Explosion', 'Water', 'Smoke', 'Blood splash'];
-            const randomEffect = effects[Math.floor(Math.random() * effects.length)];
-
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (randomEffect === 'Fire') {
-                ctx.fillStyle = 'red';
-                ctx.fillRect(100, 100, 100, 100);
-            } else if (randomEffect === 'Explosion') {
-                ctx.fillStyle = 'orange';
-                ctx.arc(150, 150, 50, 0, Math.PI * 2);
-                ctx.fill();
-            }
+            ctx.fillStyle = 'red';
+            ctx.beginPath();
+            ctx.arc(150, 150, 50, 0, Math.PI * 2);
+            ctx.fill();
         }
 
-        function generateGraph() {
+        let snakeGameInterval;
+        function startSnakeGame() {
+            const canvas = document.getElementById('snakeCanvas');
+            const ctx = canvas.getContext('2d');
+            let snake = [{ x: 160, y: 160 }];
+            let direction = { x: 0, y: -20 };
+
+            function draw() {
+                ctx.clearRect(0, 0, 320, 320);
+                snake.forEach(part => {
+                    ctx.fillStyle = 'green';
+                    ctx.fillRect(part.x, part.y, 20, 20);
+                });
+                const newHead = {
+                    x: snake[0].x + direction.x,
+                    y: snake[0].y + direction.y
+                };
+                snake.unshift(newHead);
+                snake.pop();
+            }
+            snakeGameInterval = setInterval(draw, 100);
+        }
+
+        function generateGraphs() {
             const canvas = document.getElementById('graphCanvas');
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const random = Math.random();
-            ctx.fillStyle = 'blue';
-            ctx.fillRect(100, 100, 50, 150);
+
+            ctx.fillStyle = '#4caf50';
+            ctx.fillRect(50, 200, 50, -150);
+            ctx.fillStyle = '#ff5722';
+            ctx.fillRect(150, 200, 50, -100);
         }
+
+        function playVideo() {
+            document.getElementById('videoBox').innerText = 'Playing...';
+        }
+
+        function pauseVideo() {
+            document.getElementById('videoBox').innerText = 'Paused';
+        }
+
+        function speedUp() {
+            document.getElementById('videoBox').innerText = 'Speeding Up';
+        }
+
+        function speedDown() {
+            document.getElementById('videoBox').innerText = 'Slowing Down';
+        }
+
+        startSnakeGame();
     </script>
 </body>
 </html>
