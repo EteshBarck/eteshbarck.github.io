@@ -1,194 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Etesh Barck Showcase</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Inter', sans-serif;
-            background: #121212;
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-x: hidden;
-        }
-
-        /* Navbar */
-        .navbar {
-            display: flex;
-            justify-content: center;
-            background: #1f1f1f;
-            width: 100%;
-            padding: 15px 0;
-            position: fixed;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .navbar button {
-            background: #333;
-            color: #fff;
-            border: none;
-            margin: 0 10px;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background 0.3s ease;
-        }
-
-        .navbar button.active, .navbar button:hover {
-            background: #4caf50;
-        }
-
-        /* Content Area */
-        .content {
-            margin-top: 100px;
-            width: 100%;
-            max-width: 1200px;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        /* Effects Section */
-        .effects canvas {
-            background: #000;
-            border: 2px solid #444;
-            width: 500px;
-            height: 300px;
-        }
-
-        /* Graph Section */
-        .graph canvas {
-            background: #000;
-            border: 2px solid #444;
-            width: 500px;
-            height: 300px;
-        }
-
-        /* Video Section */
-        .video-editor {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .cube {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(45deg, #ff0000, #00ff00);
-            animation: spin 4s infinite linear;
-        }
-
-        @keyframes spin {
-            from {
-                transform: rotateY(0deg);
-            }
-            to {
-                transform: rotateY(360deg);
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trading Simulator</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="navbar">
-        <button class="nav-btn" data-target="effects">FX</button>
-        <button class="nav-btn" data-target="game">Game</button>
-        <button class="nav-btn" data-target="graph">Data Graph</button>
-        <button class="nav-btn" data-target="video-editor">Video Editor</button>
+  <div class="container">
+    <header>
+      <h1>Trading Simulator</h1>
+      <p>Virtual Portfolio: $100,000</p>
+    </header>
+
+    <div class="market">
+      <h2>Market Overview</h2>
+      <div id="asset-list">
+        <!-- Asset prices will be populated here -->
+      </div>
+      <div id="asset-price">
+        <!-- Current price of AAPL will be displayed here -->
+      </div>
     </div>
 
-    <div class="content">
-        <div id="effects" class="effects hidden">
-            <canvas id="effectCanvas"></canvas>
-            <button onclick="generateEffect()">Play Effect</button>
-        </div>
-
-        <div id="game" class="game hidden">
-            <canvas id="snakeGame"></canvas>
-            <button onclick="startSnakeGame()">Start Snake Game</button>
-        </div>
-
-        <div id="graph" class="graph hidden">
-            <canvas id="graphCanvas"></canvas>
-            <button onclick="generateGraph()">Generate Graph</button>
-        </div>
-
-        <div id="video-editor" class="video-editor hidden">
-            <div class="cube"></div>
-            <div>
-                <button onclick="playCube()">Play</button>
-                <button onclick="pauseCube()">Pause</button>
-                <button onclick="speedUpCube()">Speed Up</button>
-                <button onclick="slowDownCube()">Slow Down</button>
-            </div>
-        </div>
+    <div class="portfolio">
+      <h2>Your Portfolio</h2>
+      <div id="portfolio-details">
+        <!-- Portfolio details like owned assets, current value -->
+      </div>
     </div>
 
-    <script>
-        const navButtons = document.querySelectorAll('.nav-btn');
-        const sections = document.querySelectorAll('.content > div');
-        let cubeAnimation;
+    <div class="controls">
+      <button id="buy-btn">Buy</button>
+      <button id="sell-btn">Sell</button>
+    </div>
 
-        navButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                navButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                sections.forEach(section => section.classList.add('hidden'));
-                document.getElementById(button.dataset.target).classList.remove('hidden');
-            });
-        });
+    <div class="charts">
+      <canvas id="price-chart"></canvas>
+    </div>
+  </div>
 
-        function generateEffect() {
-            const canvas = document.getElementById('effectCanvas');
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'red';
-            ctx.beginPath();
-            ctx.arc(250, 150, 50, 0, Math.PI * 2);
-            ctx.fill();
-        }
-
-        function startSnakeGame() {
-            alert('Snake game will be implemented next');
-        }
-
-        function generateGraph() {
-            const canvas = document.getElementById('graphCanvas');
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'blue';
-            ctx.fillRect(50, 200, 50, -100);
-            ctx.fillStyle = 'green';
-            ctx.fillRect(150, 200, 50, -150);
-        }
-
-        function playCube() {
-            document.querySelector('.cube').style.animationPlayState = 'running';
-        }
-
-        function pauseCube() {
-            document.querySelector('.cube').style.animationPlayState = 'paused';
-        }
-
-        function speedUpCube() {
-            document.querySelector('.cube').style.animationDuration = '2s';
-        }
-
-        function slowDownCube() {
-            document.querySelector('.cube').style.animationDuration = '8s';
-        }
-    </script>
+  <script src="app.js"></script>
 </body>
 </html>
