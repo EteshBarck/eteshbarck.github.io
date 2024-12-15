@@ -9,7 +9,7 @@
         body {
             margin: 0;
             font-family: 'Inter', sans-serif;
-            background: #111;
+            background: #0f0f0f;
             color: #fff;
             display: flex;
             flex-direction: column;
@@ -20,12 +20,13 @@
         .navbar {
             display: flex;
             justify-content: center;
-            background: #1E1E1E;
+            background: #1c1c1c;
             width: 100%;
             padding: 15px;
             position: fixed;
             top: 0;
             z-index: 100;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
         }
 
         .navbar button {
@@ -41,7 +42,7 @@
         }
 
         .navbar button:hover, .navbar button.active {
-            background: #00C2FF;
+            background: #4caf50;
         }
 
         /* Main Content */
@@ -73,28 +74,18 @@
             height: 300px;
         }
 
-        .effects button {
-            margin-top: 10px;
+        /* Game Section */
+        .game canvas {
+            background: #000;
+            width: 300px;
+            height: 300px;
+            border: 2px solid #444;
         }
 
         /* Graph Section */
-        .graph {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
         .graph canvas {
             width: 300px;
             height: 300px;
-        }
-
-        /* Game Section */
-        .game iframe {
-            width: 100%;
-            max-width: 600px;
-            height: 400px;
-            border: none;
         }
 
         /* Video Editor */
@@ -119,10 +110,6 @@
                 transform: rotateY(360deg);
             }
         }
-
-        .video-editor .controls button {
-            margin: 5px;
-        }
     </style>
 </head>
 <body>
@@ -142,7 +129,7 @@
 
         <!-- Game Section -->
         <div id="game" class="game hidden">
-            <iframe src="https://chromedino.com/" title="Dino Game"></iframe>
+            <canvas id="snakeGame"></canvas>
         </div>
 
         <!-- Graph Section -->
@@ -169,11 +156,9 @@
 
         navButtons.forEach(button => {
             button.addEventListener('click', () => {
-                // Highlight active button
                 navButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
 
-                // Show relevant section
                 sections.forEach(section => section.classList.add('hidden'));
                 document.getElementById(button.dataset.target).classList.remove('hidden');
             });
@@ -184,41 +169,25 @@
             const ctx = canvas.getContext('2d');
             const effects = ['Fire', 'Explosion', 'Water', 'Smoke', 'Blood splash'];
             const randomEffect = effects[Math.floor(Math.random() * effects.length)];
-            
+
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#FF5733';
-            ctx.font = '20px Inter';
-            ctx.fillText(randomEffect, 100, 150);
+            if (randomEffect === 'Fire') {
+                ctx.fillStyle = 'red';
+                ctx.fillRect(100, 100, 100, 100);
+            } else if (randomEffect === 'Explosion') {
+                ctx.fillStyle = 'orange';
+                ctx.arc(150, 150, 50, 0, Math.PI * 2);
+                ctx.fill();
+            }
         }
 
         function generateGraph() {
             const canvas = document.getElementById('graphCanvas');
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            const types = ['pie', 'bar', 'line'];
-            const randomType = types[Math.floor(Math.random() * types.length)];
-
-            if (randomType === 'pie') {
-                ctx.fillStyle = '#00C2FF';
-                ctx.beginPath();
-                ctx.moveTo(150, 150);
-                ctx.arc(150, 150, 100, 0, Math.PI / 2);
-                ctx.fill();
-            } else if (randomType === 'bar') {
-                ctx.fillStyle = '#FF5733';
-                ctx.fillRect(50, 100, 50, 150);
-                ctx.fillStyle = '#C70039';
-                ctx.fillRect(150, 50, 50, 200);
-            } else if (randomType === 'line') {
-                ctx.strokeStyle = '#00C2FF';
-                ctx.beginPath();
-                ctx.moveTo(0, Math.random() * 300);
-                for (let i = 0; i < 300; i += 10) {
-                    ctx.lineTo(i, Math.random() * 300);
-                }
-                ctx.stroke();
-            }
+            const random = Math.random();
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(100, 100, 50, 150);
         }
     </script>
 </body>
