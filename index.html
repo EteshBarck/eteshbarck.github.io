@@ -63,40 +63,41 @@
 
         /* Effects Section */
         .effects canvas {
-            background: #222;
-            border: 2px solid #444;
-            width: 300px;
-            height: 300px;
-        }
-
-        /* Snake Game Section */
-        .game canvas {
             background: #000;
             border: 2px solid #444;
-            width: 320px;
-            height: 320px;
+            width: 500px;
+            height: 300px;
         }
 
         /* Graph Section */
         .graph canvas {
-            width: 300px;
+            background: #000;
+            border: 2px solid #444;
+            width: 500px;
             height: 300px;
         }
 
-        /* Video Editor Section */
-        .video-editor .video-box {
-            width: 300px;
-            height: 200px;
-            background: linear-gradient(45deg, #FF5733, #C70039);
+        /* Video Section */
+        .video-editor {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            border-radius: 10px;
-            margin-bottom: 20px;
         }
 
-        .video-editor .controls button {
-            margin: 5px;
+        .cube {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, #ff0000, #00ff00);
+            animation: spin 4s infinite linear;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotateY(0deg);
+            }
+            to {
+                transform: rotateY(360deg);
+            }
         }
     </style>
 </head>
@@ -109,31 +110,28 @@
     </div>
 
     <div class="content">
-        <!-- FX Section -->
         <div id="effects" class="effects hidden">
             <canvas id="effectCanvas"></canvas>
-            <button onclick="playEffects()">Play Effects</button>
+            <button onclick="generateEffect()">Play Effect</button>
         </div>
 
-        <!-- Game Section -->
         <div id="game" class="game hidden">
-            <canvas id="snakeCanvas"></canvas>
+            <canvas id="snakeGame"></canvas>
+            <button onclick="startSnakeGame()">Start Snake Game</button>
         </div>
 
-        <!-- Graph Section -->
         <div id="graph" class="graph hidden">
             <canvas id="graphCanvas"></canvas>
-            <button onclick="generateGraphs()">Generate Graph</button>
+            <button onclick="generateGraph()">Generate Graph</button>
         </div>
 
-        <!-- Video Editor Section -->
         <div id="video-editor" class="video-editor hidden">
-            <div class="video-box" id="videoBox">Video Preview</div>
-            <div class="controls">
-                <button onclick="playVideo()">Play</button>
-                <button onclick="pauseVideo()">Pause</button>
-                <button onclick="speedUp()">Speed +</button>
-                <button onclick="speedDown()">Speed -</button>
+            <div class="cube"></div>
+            <div>
+                <button onclick="playCube()">Play</button>
+                <button onclick="pauseCube()">Pause</button>
+                <button onclick="speedUpCube()">Speed Up</button>
+                <button onclick="slowDownCube()">Slow Down</button>
             </div>
         </div>
     </div>
@@ -141,78 +139,56 @@
     <script>
         const navButtons = document.querySelectorAll('.nav-btn');
         const sections = document.querySelectorAll('.content > div');
+        let cubeAnimation;
 
         navButtons.forEach(button => {
             button.addEventListener('click', () => {
                 navButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
-
                 sections.forEach(section => section.classList.add('hidden'));
                 document.getElementById(button.dataset.target).classList.remove('hidden');
             });
         });
 
-        function playEffects() {
+        function generateEffect() {
             const canvas = document.getElementById('effectCanvas');
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = 'red';
             ctx.beginPath();
-            ctx.arc(150, 150, 50, 0, Math.PI * 2);
+            ctx.arc(250, 150, 50, 0, Math.PI * 2);
             ctx.fill();
         }
 
-        let snakeGameInterval;
         function startSnakeGame() {
-            const canvas = document.getElementById('snakeCanvas');
-            const ctx = canvas.getContext('2d');
-            let snake = [{ x: 160, y: 160 }];
-            let direction = { x: 0, y: -20 };
-
-            function draw() {
-                ctx.clearRect(0, 0, 320, 320);
-                snake.forEach(part => {
-                    ctx.fillStyle = 'green';
-                    ctx.fillRect(part.x, part.y, 20, 20);
-                });
-                const newHead = {
-                    x: snake[0].x + direction.x,
-                    y: snake[0].y + direction.y
-                };
-                snake.unshift(newHead);
-                snake.pop();
-            }
-            snakeGameInterval = setInterval(draw, 100);
+            alert('Snake game will be implemented next');
         }
 
-        function generateGraphs() {
+        function generateGraph() {
             const canvas = document.getElementById('graphCanvas');
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = '#4caf50';
-            ctx.fillRect(50, 200, 50, -150);
-            ctx.fillStyle = '#ff5722';
-            ctx.fillRect(150, 200, 50, -100);
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(50, 200, 50, -100);
+            ctx.fillStyle = 'green';
+            ctx.fillRect(150, 200, 50, -150);
         }
 
-        function playVideo() {
-            document.getElementById('videoBox').innerText = 'Playing...';
+        function playCube() {
+            document.querySelector('.cube').style.animationPlayState = 'running';
         }
 
-        function pauseVideo() {
-            document.getElementById('videoBox').innerText = 'Paused';
+        function pauseCube() {
+            document.querySelector('.cube').style.animationPlayState = 'paused';
         }
 
-        function speedUp() {
-            document.getElementById('videoBox').innerText = 'Speeding Up';
+        function speedUpCube() {
+            document.querySelector('.cube').style.animationDuration = '2s';
         }
 
-        function speedDown() {
-            document.getElementById('videoBox').innerText = 'Slowing Down';
+        function slowDownCube() {
+            document.querySelector('.cube').style.animationDuration = '8s';
         }
-
-        startSnakeGame();
     </script>
 </body>
 </html>
